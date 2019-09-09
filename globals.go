@@ -8,7 +8,7 @@ import (
 	"github.com/kthomas/go-logger"
 )
 
-const vouchedDefaultEnvironment = "sandbox"
+const vouchedDefaultEnvironment = "verify"
 
 var (
 	log           *logger.Logger
@@ -28,9 +28,9 @@ func init() {
 		log = logger.NewLogger("vouched", lvl, true)
 
 		if os.Getenv("VOUCHED_API_ENVIRONMENT") != "" {
-			vouchedAPIBaseURL = fmt.Sprintf("https://%s.vouched.id", os.Getenv("VOUCHED_API_ENVIRONMENT"))
+			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/graphql", os.Getenv("VOUCHED_API_ENVIRONMENT"))
 		} else {
-			vouchedAPIBaseURL = fmt.Sprintf("https://%s.vouched.id", vouchedDefaultEnvironment)
+			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/graphql", vouchedDefaultEnvironment)
 		}
 
 		if os.Getenv("VOUCHED_API_TOKEN") != "" {
