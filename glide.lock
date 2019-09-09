@@ -1,0 +1,18 @@
+hash: 71c98693152fff98682df031d9d2c86a7639627115831fe9587d68e59c88af26
+updated: 2019-09-09T12:17:50.018848-04:00
+imports:
+- name: github.com/google/logger
+  version: 03bdf7bcb2c4d98c8fdbf62f1473fb1303ca1c1d
+- name: github.com/kthomas/go-logger
+  version: 01c36065851341304751234b081327cf58728dba
+- name: github.com/machinebox/graphql
+  version: 3a92531802258604bd12793465c2e28bc4b2fc85
+- name: github.com/vincent-petithory/dataurl
+  version: 9a301d65acbb728fcc3ace14f45f511a4cfeea9c
+- name: golang.org/x/sys
+  version: 04f50cda93cbb67f2afa353c52f342100e80e625
+  subpackages:
+  - windows
+  - windows/registry
+  - windows/svc/eventlog
+testImports: []
