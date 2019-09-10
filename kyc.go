@@ -6,24 +6,21 @@ import "fmt"
 
 // GetApplication see https://edoc.vouched.com
 func (v *VouchedAPIClient) GetApplication(applicationID string) (interface{}, error) {
-	return nil, fmt.Errorf("vouched API method not implemented")
-
-	// var resp map[string]interface{}
-	// req := &KYCApplicationVerificationRequest{
-	// 	ID:   stringOrNil(applicationID),
-	// 	Type: stringOrNil("id-verification"),
-	// }
-	// status, err := v.Get(fmt.Sprintf("idv/%s", applicationID), nil, &resp)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("Failed to retrieve KYC application via vouched API; status: %d; %s", status, err.Error())
-	// }
-	// return resp, nil
+	resp := make([]*KYCApplication, 0)
+	status, err := v.Post(graphqlQueryJobs, map[string]interface{}{"id": applicationID}, resp)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to retrieve KYC application via vouched API; status: %d; %s", status, err.Error())
+	}
+	if resp != nil && len(resp) == 1 {
+		return resp[0], nil
+	}
+	return []*KYCApplication{}, nil
 }
 
 // SubmitApplication see https://edoc.vouched.com
 func (v *VouchedAPIClient) SubmitApplication(params map[string]interface{}) (interface{}, error) {
-	var resp map[string]interface{}
-	status, err := v.Post("idv", params, &resp)
+	resp := &KYCApplicationIDVerificationResult{}
+	status, err := v.Post(graphqlSubmitJobMutation, map[string]interface{}{"input": params}, resp)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to upload consumer KYC document via vouched API; status: %d; %s", status, err.Error())
 	}

@@ -28,9 +28,9 @@ func init() {
 		log = logger.NewLogger("vouched", lvl, true)
 
 		if os.Getenv("VOUCHED_API_ENVIRONMENT") != "" {
-			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/graphql", os.Getenv("VOUCHED_API_ENVIRONMENT"))
+			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/", os.Getenv("VOUCHED_API_ENVIRONMENT"))
 		} else {
-			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/graphql", vouchedDefaultEnvironment)
+			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/", vouchedDefaultEnvironment)
 		}
 
 		if os.Getenv("VOUCHED_API_TOKEN") != "" {

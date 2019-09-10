@@ -2,18 +2,32 @@ package vouched
 
 // KYCApplication represents a vouched KYC application
 type KYCApplication struct {
-	ID        *string                             `json:"id"`
-	Status    *string                             `json:"status"`
-	Submitted *string                             `json:"submitted"`
-	Request   *KYCApplicationRequest              `json:"request"`
-	Result    *KYCApplicationIDVerificationResult `json:"result"`
+	ID        *string                                    `json:"id"`
+	Status    *string                                    `json:"status"`
+	Submitted *string                                    `json:"submitted"`
+	Request   *KYCApplicationRequest                     `json:"request"`
+	Result    *KYCApplicationIDVerificationResult        `json:"result"`
+	Errors    []*KYCApplicationIDVerificationResultError `json:"errors"`
+}
+
+// KYCApplicationRequestParameters represents a vouched KYC job request
+type KYCApplicationRequestParameters struct {
+	FirstName         *string `json:"firstName"`
+	LastName          *string `json:"lastName"`
+	DOB               *string `json:"dob"`
+	UserPhoto         *string `json:"userPhoto"`
+	IDPhoto           *string `json:"idPhoto"`
+	IDPhotoBack       *string `json:"idPhotoBack"`
+	TwicPhoto         *string `json:"twicPhoto"`
+	CarInsurancePhoto *string `json:"carInsurancePhoto"`
+	DOTPhoto          *string `json:"dotPhoto"`
 }
 
 // KYCApplicationRequest represents a vouched KYC application request
 type KYCApplicationRequest struct {
-	Type        *string `json:"type"`
-	CallbackURL *string `json:"callbackURL"`
-	// parameters	JobParameters	*	Object for 'id-verification'
+	Type        *string                          `json:"type"`
+	CallbackURL *string                          `json:"callbackURL"`
+	Parameters  *KYCApplicationRequestParameters `json:"parameters"`
 }
 
 // KYCApplicationIDVerificationResult represents a vouched KYC application id verification response
@@ -60,16 +74,17 @@ type KYCApplicationIDVerificationResultError struct {
 	Errors     []*KYCApplicationIDVerificationResultError `json:"errors"`
 }
 
-// KYCApplicationVerificationRequest represents a graphql request for a previously-submitted KYC application
-type KYCApplicationVerificationRequest struct {
-	ID   *string `json:"id"`
-	Type *string `json:"type"`
+// KYCApplicationQuery represents a graphql request for a previously-submitted KYC application
+type KYCApplicationQuery struct {
+	ID         *string `json:"id"`
+	Type       *string `json:"type"`
+	Status     *string `json:"status"`
+	WithPhotos *bool   `json:"withPhotos"`
 
 	// page	Int		Paginate list by page where the page starts at 1, defaults to 1.
 	// pageSize	Int		The number of items for a page, max 1000, defaults to 100
 	// sortBy	String		Sort the list from ("date", "status").
 	// sortOrder	String		Order the sort from ("asc", "desc").
-	// status	String		Filter by status from ("active","completed")
 	// to	String		Filter by submitted to ISO8601 date.
 	// from	String		Filter by submitted from ISO8601 date.
 	// withPhotos	Boolean		Defaults to False. The returned job will contain detailed information idPhoto, idPhotoBack, and userPhoto.
