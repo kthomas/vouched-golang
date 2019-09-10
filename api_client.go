@@ -76,7 +76,7 @@ func (v *VouchedAPIClient) sendRequest(method, uri, contentType, graphqlRequest 
 		json.Unmarshal(payload, &_params) // HACK
 		q := reqURL.Query()
 		for name := range _params {
-			if val, valOk := params[name].(string); valOk {
+			if val, valOk := _params[name].(string); valOk {
 				q.Set(name, val)
 			}
 		}
