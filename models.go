@@ -2,12 +2,12 @@ package vouched
 
 // KYCApplication represents a vouched KYC application
 type KYCApplication struct {
-	ID        *string                                    `json:"id"`
-	Status    *string                                    `json:"status"`
-	Submitted *string                                    `json:"submitted"`
-	Request   *KYCApplicationRequest                     `json:"request"`
-	Result    *KYCApplicationIDVerificationResult        `json:"result"`
-	Errors    []*KYCApplicationIDVerificationResultError `json:"errors"`
+	ID        *string                             `json:"id"`
+	Status    *string                             `json:"status"`
+	Submitted *string                             `json:"submitted"`
+	Request   *KYCApplicationRequest              `json:"request"`
+	Result    *KYCApplicationIDVerificationResult `json:"result"`
+	Errors    []*Error                            `json:"errors"`
 }
 
 // KYCApplicationRequestParameters represents a vouched KYC job request
@@ -30,6 +30,17 @@ type KYCApplicationRequest struct {
 	Parameters  *KYCApplicationRequestParameters `json:"parameters"`
 }
 
+// KYCApplicationResponse represents a vouched KYC application submission response
+type KYCApplicationResponse struct {
+	Data   *KYCApplicationResponseData `json:"data"`
+	Errors []*Error                    `json:"errors"`
+}
+
+// KYCApplicationResponseData represents a vouched KYC application response "data" object
+type KYCApplicationResponseData struct {
+	Job *KYCApplication `json:"submitJob"`
+}
+
 // KYCApplicationIDVerificationResult represents a vouched KYC application id verification response
 type KYCApplicationIDVerificationResult struct {
 	ID          *string                                        `json:"id"`
@@ -41,7 +52,7 @@ type KYCApplicationIDVerificationResult struct {
 	DOB         *string                                        `json:"dob"`
 	Success     *bool                                          `json:"success"`
 	Confidences *KYCApplicationIDVerificationResultConfidences `json:"confidences"`
-	Errors      []*KYCApplicationIDVerificationResultError     `json:"errors"`
+	Errors      []*Error                                       `json:"errors"`
 }
 
 // KYCApplicationIDVerificationResultConfidences represents confidence scores for a vouched KYC application id verification response
@@ -53,7 +64,7 @@ type KYCApplicationIDVerificationResultConfidences struct {
 	Selfie    *float64 `json:"selfie"`
 }
 
-// KYCApplicationIDVerificationResultError represents an error for a vouched KYC application id verification response
+// Error represents an error for a vouched KYC API call or id verification response
 // The following are valid error types:
 // 		- InvalidRequestError
 // 		- FaceMatchError
@@ -67,11 +78,11 @@ type KYCApplicationIDVerificationResultConfidences struct {
 // 		- InvalidIdBackPhotoError
 // 		- UnknownSystemError
 // 		- InvalidIdError
-type KYCApplicationIDVerificationResultError struct {
-	Type       *string                                    `json:"type"`
-	Message    *string                                    `json:"message"`
-	Suggestion *string                                    `json:"suggestion"`
-	Errors     []*KYCApplicationIDVerificationResultError `json:"errors"`
+type Error struct {
+	Type       *string `json:"type"`
+	Message    *string `json:"message"`
+	Suggestion *string `json:"suggestion"`
+	// Errors     []*Error `json:"errors"`
 }
 
 // KYCApplicationQuery represents a graphql request for a previously-submitted KYC application
@@ -80,14 +91,22 @@ type KYCApplicationQuery struct {
 	Type       *string `json:"type"`
 	Status     *string `json:"status"`
 	WithPhotos *bool   `json:"withPhotos"`
+}
 
-	// page	Int		Paginate list by page where the page starts at 1, defaults to 1.
-	// pageSize	Int		The number of items for a page, max 1000, defaults to 100
-	// sortBy	String		Sort the list from ("date", "status").
-	// sortOrder	String		Order the sort from ("asc", "desc").
-	// to	String		Filter by submitted to ISO8601 date.
-	// from	String		Filter by submitted from ISO8601 date.
-	// withPhotos	Boolean		Defaults to False. The returned job will contain detailed information idPhoto, idPhotoBack, and userPhoto.
+// KYCApplicationQueryResponse represents a vouched KYC application query response
+type KYCApplicationQueryResponse struct {
+	Data   *KYCApplicationQueryResponseData `json:"data"`
+	Errors []*Error                         `json:"errors"`
+}
+
+// KYCApplicationQueryResponseData represents a vouched KYC application query response "data" object
+type KYCApplicationQueryResponseData struct {
+	Jobs *KYCApplicationResponseJobs `json:"jobs"`
+}
+
+// KYCApplicationResponseJobs represents a vouched KYC application response data "jobs" object
+type KYCApplicationResponseJobs struct {
+	Items []*KYCApplication `json:"items"`
 }
 
 // IsAccepted returns true if the KYC application has been accepted

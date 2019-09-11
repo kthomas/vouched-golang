@@ -7,13 +7,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/vincent-petithory/dataurl"
 )
 
 const defaultContentType = "application/json"
@@ -69,7 +66,7 @@ func (v *VouchedAPIClient) sendRequest(method, uri, contentType, graphqlRequest 
 	}
 
 	payload := v.buildGraphQLPayload(graphqlRequest, params)
-	log.Debugf("Attempting graphQL request:\n%s", string(payload))
+	log.Debugf("Attempting %d-byte vouched graphQL API request", len(payload))
 
 	if mthd == "GET" && params != nil {
 		_params := map[string]interface{}{}
@@ -101,51 +98,6 @@ func (v *VouchedAPIClient) sendRequest(method, uri, contentType, graphqlRequest 
 	var req *http.Request
 
 	if mthd == "POST" || mthd == "PUT" {
-		if contentType == "application/json" {
-			// payload, err = json.Marshal(params)
-			// FIXME-- this branch is a no-op due to vouched's graphql backend
-			if err != nil {
-				log.Warningf("Failed to marshal JSON payload for vouched API (%s %s) invocation; %s", method, urlString, err.Error())
-				return -1, err
-			}
-		} else if contentType == "application/x-www-form-urlencoded" {
-			urlEncodedForm := url.Values{}
-			for key, val := range params {
-				if valStr, valOk := val.(string); valOk {
-					urlEncodedForm.Add(key, valStr)
-				} else {
-					log.Warningf("Failed to marshal application/x-www-form-urlencoded parameter: %s; value was non-string", key)
-				}
-			}
-			payload = []byte(urlEncodedForm.Encode())
-		} else if contentType == "multipart/form-data" {
-			body := new(bytes.Buffer)
-			writer := multipart.NewWriter(body)
-			for key, val := range params {
-				if valStr, valStrOk := val.(string); valStrOk {
-					dURL, err := dataurl.DecodeString(valStr)
-					if err == nil {
-						log.Debugf("Parsed data url parameter: %s", key)
-						part, err := writer.CreateFormFile(key, key)
-						if err != nil {
-							return 0, err
-						}
-						part.Write(dURL.Data)
-					} else {
-						_ = writer.WriteField(key, valStr)
-					}
-				} else {
-					log.Warningf("Skipping non-string value when constructing multipart/form-data request: %s", key)
-				}
-			}
-			err = writer.Close()
-			if err != nil {
-				return 0, err
-			}
-
-			payload = []byte(body.Bytes())
-		}
-
 		req, _ = http.NewRequest(method, urlString, bytes.NewReader(payload))
 		headers["Content-Type"] = []string{contentType}
 	} else {
@@ -186,31 +138,17 @@ func (v *VouchedAPIClient) sendRequest(method, uri, contentType, graphqlRequest 
 
 	if resp.StatusCode < 400 {
 		log.Debugf("Invocation of vouched graphQL API succeeded (%v-byte response)", buf.Len())
+		log.Debugf("%s", string(buf.Bytes()))
 	} else {
-		log.Warningf("Invocation of vouched graphQL API failed (%v-byte response)", buf.Len())
+		log.Warningf("Invocation of vouched graphQL API failed (%v-byte response follows)\n%s", buf.Len(), string(buf.Bytes()))
 		return resp.StatusCode, fmt.Errorf("Vouched graphQL API invocation failed (%d)", resp.StatusCode)
 	}
 	return resp.StatusCode, nil
 }
 
-// Get constructs and synchronously sends an API GET request
-func (v *VouchedAPIClient) Get(graphqlRequest string, params map[string]interface{}, response interface{}) (status int, err error) {
-	return v.sendRequest("GET", "", defaultContentType, graphqlRequest, params, response)
-}
-
 // Post constructs and synchronously sends an API POST request
 func (v *VouchedAPIClient) Post(graphqlRequest string, params map[string]interface{}, response interface{}) (status int, err error) {
 	return v.sendRequest("POST", "", defaultContentType, graphqlRequest, params, response)
-}
-
-// PostWWWFormURLEncoded constructs and synchronously sends an API POST request using
-func (v *VouchedAPIClient) PostWWWFormURLEncoded(graphqlRequest string, params map[string]interface{}, response interface{}) (status int, err error) {
-	return v.sendRequest("POST", "", "application/x-www-form-urlencoded", graphqlRequest, params, response)
-}
-
-// PostMultipartFormData constructs and synchronously sends an API POST request using multipart/form-data as the content-type
-func (v *VouchedAPIClient) PostMultipartFormData(graphqlRequest string, params map[string]interface{}, response interface{}) (status int, err error) {
-	return v.sendRequest("POST", "", "multipart/form-data", graphqlRequest, params, response)
 }
 
 func (v *VouchedAPIClient) buildURL(uri string) string {
