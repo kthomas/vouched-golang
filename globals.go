@@ -9,6 +9,7 @@ import (
 )
 
 const vouchedDefaultEnvironment = "verify"
+const vouchedDefaultCallbackURL = "http://localhost"
 
 var (
 	log           *logger.Logger
@@ -17,6 +18,8 @@ var (
 	vouchedAPIBaseURL string
 	vouchedAPIUser    string
 	vouchedAPIToken   string
+
+	vouchedCallbackURL string
 )
 
 func init() {
@@ -35,6 +38,12 @@ func init() {
 
 		if os.Getenv("VOUCHED_API_TOKEN") != "" {
 			vouchedAPIToken = os.Getenv("VOUCHED_API_TOKEN")
+		}
+
+		if os.Getenv("VOUCHED_CALLBACK_URL") != "" {
+			vouchedCallbackURL = os.Getenv("VOUCHED_CALLBACK_URL")
+		} else {
+			vouchedCallbackURL = vouchedDefaultCallbackURL
 		}
 	})
 }

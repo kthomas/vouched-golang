@@ -19,6 +19,9 @@ func (v *VouchedAPIClient) GetApplication(applicationID string) (interface{}, er
 
 // SubmitApplication see https://edoc.vouched.com
 func (v *VouchedAPIClient) SubmitApplication(params map[string]interface{}) (interface{}, error) {
+	if _, callbackURLOk := params["callbackURL"].(string); !callbackURLOk {
+		params["callbackURL"] = vouchedCallbackURL
+	}
 	resp := &KYCApplicationResponse{}
 	status, err := v.Post(graphqlSubmitJobMutation, params, resp)
 	if err != nil {
