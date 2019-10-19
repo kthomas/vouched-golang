@@ -7,7 +7,7 @@ import "fmt"
 // GetApplication see https://edoc.vouched.com
 func (v *VouchedAPIClient) GetApplication(applicationID string) (interface{}, error) {
 	resp := &KYCApplicationQueryResponse{}
-	status, err := v.Post(graphqlQueryJobs, map[string]interface{}{"id": applicationID, "withPhotos": true}, resp)
+	status, err := v.Post(graphqlQueryJobs, map[string]interface{}{"id": applicationID, "withPhotos": false}, resp)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to retrieve KYC application via vouched API; status: %d; %s", status, err.Error())
 	}
