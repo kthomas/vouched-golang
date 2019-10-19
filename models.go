@@ -38,30 +38,30 @@ type KYCApplicationResponse struct {
 
 // KYCApplicationResponseData represents a vouched KYC application response "data" object
 type KYCApplicationResponseData struct {
-	Job *KYCApplication `json:"submitJob"`
+	Job *KYCApplication `json:"submitJob,omitempty"`
 }
 
 // KYCApplicationIDVerificationResult represents a vouched KYC application id verification response
 type KYCApplicationIDVerificationResult struct {
-	ID          *string                                        `json:"id"`
-	Type        *string                                        `json:"type"`
-	FirstName   *string                                        `json:"firstName"`
-	LastName    *string                                        `json:"lastName"`
-	State       *string                                        `json:"state"`
-	Country     *string                                        `json:"country"`
-	DOB         *string                                        `json:"dob"`
-	Success     *bool                                          `json:"success"`
-	Confidences *KYCApplicationIDVerificationResultConfidences `json:"confidences"`
-	Errors      []*Error                                       `json:"errors"`
+	ID          *string                                        `json:"id,omitempty"`
+	Type        *string                                        `json:"type,omitempty"`
+	FirstName   *string                                        `json:"firstName,omitempty"`
+	LastName    *string                                        `json:"lastName,omitempty"`
+	State       *string                                        `json:"state,omitempty"`
+	Country     *string                                        `json:"country,omitempty"`
+	DOB         *string                                        `json:"dob,omitempty"`
+	Success     *bool                                          `json:"success,omitempty"`
+	Confidences *KYCApplicationIDVerificationResultConfidences `json:"confidences,omitempty"`
+	Errors      []*Error                                       `json:"errors,omitempty"`
 }
 
 // KYCApplicationIDVerificationResultConfidences represents confidence scores for a vouched KYC application id verification response
 type KYCApplicationIDVerificationResultConfidences struct {
-	ID        *float64 `json:"id"`
-	BackID    *float64 `json:"backId"`
-	FaceMatch *float64 `json:"faceMatch"`
-	IDMatch   *float64 `json:"idMatch"`
-	Selfie    *float64 `json:"selfie"`
+	ID        *float64 `json:"id,omitempty"`
+	BackID    *float64 `json:"backId,omitempty"`
+	FaceMatch *float64 `json:"faceMatch,omitempty"`
+	IDMatch   *float64 `json:"idMatch,omitempty"`
+	Selfie    *float64 `json:"selfie,omitempty"`
 }
 
 // Error represents an error for a vouched KYC API call or id verification response
