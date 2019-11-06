@@ -19,10 +19,15 @@ const graphqlSubmitJobMutation = `mutation submitJob($type: String!, $callbackUR
         }
       }
       result {
+        id
         success
         type
         country
         state
+        expireDate
+        birthDate
+        firstName
+        lastName
         confidences {
           id
           backId
@@ -88,10 +93,15 @@ const graphqlQueryJobs = `query jobs(
           }
         }
         result {
+          id
           success
           type
           country
           state
+          expireDate
+          birthDate
+          firstName
+          lastName
           confidences {
             id
             backId
