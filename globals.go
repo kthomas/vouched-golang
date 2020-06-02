@@ -28,7 +28,12 @@ func init() {
 		if lvl == "" {
 			lvl = "INFO"
 		}
-		log = logger.NewLogger("vouched", lvl, true)
+		var endpoint *string
+		if os.Getenv("SYSLOG_ENDPOINT") != "" {
+			endpt := os.Getenv("SYSLOG_ENDPOINT")
+			endpoint = &endpt
+		}
+		log = logger.NewLogger("vouched", lvl, endpoint)
 
 		if os.Getenv("VOUCHED_API_ENVIRONMENT") != "" {
 			vouchedAPIBaseURL = fmt.Sprintf("https://%s.woollylabs.com/", os.Getenv("VOUCHED_API_ENVIRONMENT"))

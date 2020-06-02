@@ -1,4 +1,0 @@
-package: github.com/kthomas/vouched-golang
-import:
-- package: github.com/kthomas/go-logger
-- package: github.com/vincent-petithory/dataurl
